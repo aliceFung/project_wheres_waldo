@@ -1,9 +1,11 @@
 class Character < ActiveRecord::Base
 
+  has_many :tags
+
   def self.check_position(tag, character_id)
     character = Character.find(character_id)
     puts "=================="
-    puts  character_id 
+    puts  character_id
     tag_x = tag.tag_x
     tag_y = tag.tag_y
     if (character.real_x < (50 + tag_x)) && (character.real_x > (-50+tag_x ))

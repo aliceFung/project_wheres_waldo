@@ -6,36 +6,39 @@ var games = (function($){
     var coord_x=0;
     var coord_y=0;
     getTags();
-    
+
   };
 
 
-  var getTags()= function(){
-        $.ajax({
-        type: 'GET',
-        url: '/tags',
-        dataType: 'json',
-        success: function(json){
-          console.log('ajax getTag success');
-           for(var i=0; i<json.length; i++){
-            var tag = json[i]
-            $('#photo').append('<div id='+tag.id+' class="tag"></div>').css({left:  tag.tag_x, top:  tag.tag_y});
-           }
-   
-        },
-        error: function(){
-          console.log('ajax getTag failed ');
-          
-        },
-        complete: function(){
-          console.log('ajax createTag complete');
-         
-        }
-      });
+  var getTags= function(){
+    console.log('getting tag');
+    $.ajax({
+    type: 'GET',
+    url: '/tags',
+    dataType: 'json',
+    success: function(json){
+      console.log(json);
+      console.log('ajax getTag success');
+       for(var i=0; i<json.tags.length; i++){
+        var tag = json.tags[i];
+        $('#photo').append('<div id='+tag.id+' class="tag"></div>');
+        $('#'+tag.id).css({left:  tag.tag_x, top:  tag.tag_y});
+       }
+    },
 
-  }
+    error: function(){
+      console.log('ajax getTag failed ');
 
-  
+    },
+    complete: function(){
+      console.log('ajax getTag complete');
+
+    }
+  });
+
+  };
+
+
   var addListeners = function(){
     $('#photo').click(function(e){
       console.log('on click');
@@ -50,9 +53,9 @@ var games = (function($){
     });
 
     $('#photo').mouseenter(function(){
-      showTags();
+      // showTags();
     }).mouseleave(function(){
-      hideTags();
+      // hideTags();
     })
   };
 
@@ -81,7 +84,7 @@ var games = (function($){
         dataType: 'json',
         success: function(){
           console.log('ajax create tag success');
-                
+
           character_name = $("form option:selected").text();
           $('#last').text(character_name);
           $('#last').removeAttr("id");
@@ -97,7 +100,7 @@ var games = (function($){
       });
   };
 
-  
+
 
 
   return {

@@ -1,15 +1,17 @@
 class TagsController < ApplicationController
 
-  
+
   def index
     @tags = Tag.all
     @characters = Character.all
-    render json: {@tags, @characters}
+    respond_to do |format|
+      format.json {render json: {tags: @tags, characters: @characters}}
+    end
   end
 
   def create
     @tag = Tag.new(params_list)
-    
+
     # puts "Tag before check___________________________"
     if Character.check_position(@tag, params[:tag][:character_id]) && @tag.save
       puts "Tag checked in create___________________________"
