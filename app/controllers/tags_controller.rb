@@ -6,9 +6,9 @@ class TagsController < ApplicationController
 
   def create
     @tag = Tag.new(params_list)
-    puts 
+    puts
     puts "Tag before check___________________________"
-    if Character.check_position(@tag) && @tag.save
+    if Character.check_position(@tag, params[:character_id]) && @tag.save
       puts "Tag checked in create___________________________"
       redirect_to @tag
     end
