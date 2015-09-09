@@ -3,6 +3,8 @@ project_wheres_waldo
 
 He totally didn't pay his bill.
 
+Alice & Olga
+
 
 //Character model
 name
