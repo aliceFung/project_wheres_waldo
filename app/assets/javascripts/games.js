@@ -17,13 +17,7 @@ var games = (function($){
     url: '/tags',
     dataType: 'json',
     success: function(json){
-      console.log(json);
-      console.log('ajax getTag success');
-       for(var i=0; i<json.tags.length; i++){
-        var tag = json.tags[i];
-        $('#photo').append('<div id='+tag.id+' class="tag"></div>');
-        $('#'+tag.id).css({left:  tag.tag_x, top:  tag.tag_y});
-       }
+      displayTags(json)
     },
 
     error: function(){
@@ -36,6 +30,16 @@ var games = (function($){
     }
   });
 
+  };
+
+  var displayTags = function(json){
+    var characters = json.characters;
+     for(var i=0; i<json.tags.length; i++){
+      var tag = json.tags[i];
+      $('#photo').append('<div id='+tag.id+' class="tag"></div>');
+      $('#'+tag.id).css({left:  tag.tag_x, top:  tag.tag_y}).text(characters[tag.character_id]);
+     }
+       //add name character
   };
 
 
@@ -53,16 +57,20 @@ var games = (function($){
     });
 
     $('#photo').mouseenter(function(){
-      // showTags();
+      showTags();
     }).mouseleave(function(){
-      // hideTags();
+      hideTags();
     })
   };
 
 
   var showTags = function(){
+    $('.tag').removeClass('hidden');
+  };
 
-  }
+  var hideTags = function(){
+    $('.tag').addClass('hidden');
+  };
 
   var targeting = function(e){
     console.log('inside target fun');
