@@ -5,7 +5,7 @@ class TagsController < ApplicationController
     @tags = Tag.all
     @characters = Character.all
     names = {}
-    @characters.each do |character| 
+    @characters.each do |character|
       names[character.id]=character.name
     end
     respond_to do |format|
@@ -36,6 +36,9 @@ class TagsController < ApplicationController
     @tag=Tag.find(params[:tag][:id])
     if @tag.destroy
       puts "Tag deleted from db ======="
+    end
+    respond_to do |format|
+      format.json { render json: nothing: true}
     end
   end
 

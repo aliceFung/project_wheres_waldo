@@ -9,10 +9,10 @@
     <img src="http://s3.amazonaws.com/viking_education/web_development/web_app_eng/ww_giant_image.jpg">
   </div> -->
 
+  </div>
     <%=form_for Tag.new, url: {action:"create", controller: "tags"}  do |t|%>
       <%= t.collection_select(:character_id, @characters, :id, :name) %>
       <%= t.submit %>
     <% end %>
-  </div>
 </body>
 </html>

@@ -46,13 +46,21 @@ var games = (function($){
 
 
   var addListeners = function(){
-    $('#photo').click(function(e){
+    $('img').click(function(e){
       console.log('on click');
       targeting(e);
     });
 
+    //can delete, but cannot create tag
+    $('body').on('click', '.delete', function(e){
+                e.preventDefault();
+                deleteTag(e);
+              });
+
+    //createTag listener
     $('input[type=submit]').click(function(e){
       e.preventDefault();
+      console.log('inside input submit event');
       character_id = $('form select').val();
       createTag(coord_x, coord_y, character_id);
 
@@ -62,33 +70,61 @@ var games = (function($){
       showTags();
     }).mouseleave(function(){
       hideTags();
-    })
+    });
 
-    $('.delete').click(function(e){
-      e.preventDefault();
-      var target = $(e.target).parent()
-      var tag_id = target.attr('id')
-      $.ajax({
-        type: 'DELETE',
-        url: destination,
-        data: {tag: {id: tag_id}},
-        dataType: 'json',
-        success: function(){
-          target.remove();
-        
-        },
-        error: function(){
-          console.log('ajax failed to delete tag');
-        
-        },
-        complete: function(){
-          console.log('ajax delete complete');
-          
-        }
-      });
-    })
+    // $('.delete').click(function(e){
+    //   e.preventDefault();
+    //   console.log('inside delete event');
+    //   e.stopPropagation();
+    // var destination = '/tags/'+ tag_id;
+    //   var target = $(e.target).parent();
+    //   var tag_id = target.attr('id');
+    //   $.ajax({
+    //     type: 'DELETE',
+    //     url: destination,
+    //     data: {tag: {id: tag_id}},
+    //     dataType: 'json',
+    //     success: function(){
+    //       console.log('ajax deleted tag. YAY!');
+    //       target.remove();
+
+    //     },
+    //     error: function(){
+    //       console.log('ajax failed to delete tag');
+
+    //     },
+    //     complete: function(){
+    //       console.log('ajax delete complete');
+
+    //     }
+    //   });
+    // });
   };
 
+  var deleteTag= function(e){
+    var target = $(e.target).parent();
+    var tag_id = target.attr('id');
+    var destination = '/tags/'+ tag_id;
+    $.ajax({
+      type: 'DELETE',
+      url: destination,
+      data: {tag: {id: tag_id}},
+      dataType: 'json',
+      success: function(){
+        console.log('ajax deleted tag. YAY!');
+        target.remove();
+
+      },
+      error: function(){
+        console.log('ajax failed to delete tag');
+
+      },
+      complete: function(){
+        console.log('ajax delete complete');
+
+      }
+    });
+  };
 
   var showTags = function(){
     $('.tag').removeClass('hidden');
