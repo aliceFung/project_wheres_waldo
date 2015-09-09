@@ -4,8 +4,12 @@ class TagsController < ApplicationController
   def index
     @tags = Tag.all
     @characters = Character.all
+    names = {}
+    @characters.each do |character| 
+      names[character.id]=character.name
+    end
     respond_to do |format|
-      format.json {render json: {tags: @tags, characters: @characters}}
+      format.json {render json: {tags: @tags, characters: names}}
     end
   end
 
@@ -27,15 +31,12 @@ class TagsController < ApplicationController
     end
   end
 
-  def show
-    @tag=Tag.find(params[:id])
-    # respond_to do |format|
-    #   format.js
-    # end
-  end
 
   def destroy
-
+    @tag=Tag.find(params[:tag][:id])
+    if @tag.destroy
+      puts "Tag deleted from db ======="
+    end
   end
 
   private

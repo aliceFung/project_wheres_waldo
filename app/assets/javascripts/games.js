@@ -34,10 +34,12 @@ var games = (function($){
 
   var displayTags = function(json){
     var characters = json.characters;
+
      for(var i=0; i<json.tags.length; i++){
       var tag = json.tags[i];
+
       $('#photo').append('<div id='+tag.id+' class="tag"></div>');
-      $('#'+tag.id).css({left:  tag.tag_x, top:  tag.tag_y}).text(characters[tag.character_id]);
+      $('#'+tag.id).css({left:  tag.tag_x, top:  tag.tag_y}).html(characters[tag.character_id]+'<br><a href="#" class="delete">Delete</a>');
      }
        //add name character
   };
@@ -60,6 +62,30 @@ var games = (function($){
       showTags();
     }).mouseleave(function(){
       hideTags();
+    })
+
+    $('.delete').click(function(e){
+      e.preventDefault();
+      var target = $(e.target).parent()
+      var tag_id = target.attr('id')
+      $.ajax({
+        type: 'DELETE',
+        url: destination,
+        data: {tag: {id: tag_id}},
+        dataType: 'json',
+        success: function(){
+          target.remove();
+        
+        },
+        error: function(){
+          console.log('ajax failed to delete tag');
+        
+        },
+        complete: function(){
+          console.log('ajax delete complete');
+          
+        }
+      });
     })
   };
 
