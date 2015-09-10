@@ -36,9 +36,14 @@ class TagsController < ApplicationController
     @tag=Tag.find(params[:tag][:id])
     if @tag.destroy
       puts "Tag deleted from db ======="
-    end
-    respond_to do |format|
-      format.json { render json: nothing: true}
+      respond_to do |format|
+        format.json {head :ok}
+      end
+    else
+      respond_to do |format|
+        format.json { render nothing: true, status: 400}
+      end
+
     end
   end
 

@@ -1,11 +1,17 @@
 var games = (function($){
   var init = function(){
-    console.log('init');
-    addListeners();
+    var score = 60*60*60
+    var total = 0
     var character_id = 0;
     var coord_x=0;
     var coord_y=0;
     getTags();
+
+    var timer = setInterval(function(){
+      score-=1
+      $('#score').text("Score: " + score)
+    }, 1000)
+    
 
   };
 
@@ -17,7 +23,8 @@ var games = (function($){
     url: '/tags',
     dataType: 'json',
     success: function(json){
-      displayTags(json)
+      displayTags(json);
+      addListeners();
     },
 
     error: function(){
@@ -25,6 +32,7 @@ var games = (function($){
 
     },
     complete: function(){
+      
       console.log('ajax getTag complete');
 
     }
@@ -51,60 +59,46 @@ var games = (function($){
       targeting(e);
     });
 
-    //can delete, but cannot create tag
-    $('body').on('click', '.delete', function(e){
-                e.preventDefault();
-                deleteTag(e);
-              });
+    //DELETE LINK
+    addListenerDelete();
+    //SUBMIT BUTTON
+    addListenerButton();
 
-    //createTag listener
-    $('input[type=submit]').click(function(e){
-      e.preventDefault();
-      console.log('inside input submit event');
-      character_id = $('form select').val();
-      createTag(coord_x, coord_y, character_id);
-
-    });
-
-    $('#photo').mouseenter(function(){
+    $('#container').mouseenter(function(){
       showTags();
+      $('form').removeClass("hidden")
     }).mouseleave(function(){
+      $('form').addClass("hidden")
       hideTags();
     });
 
-    // $('.delete').click(function(e){
-    //   e.preventDefault();
-    //   console.log('inside delete event');
-    //   e.stopPropagation();
-    // var destination = '/tags/'+ tag_id;
-    //   var target = $(e.target).parent();
-    //   var tag_id = target.attr('id');
-    //   $.ajax({
-    //     type: 'DELETE',
-    //     url: destination,
-    //     data: {tag: {id: tag_id}},
-    //     dataType: 'json',
-    //     success: function(){
-    //       console.log('ajax deleted tag. YAY!');
-    //       target.remove();
+  }
 
-    //     },
-    //     error: function(){
-    //       console.log('ajax failed to delete tag');
+    var addListenerDelete = function(){
+      $('.delete').click(function(e){
+        e.preventDefault();
+        console.log('inside delete event');
+        e.stopPropagation();
+        deleteTag(e);
+      });
+    }
 
-    //     },
-    //     complete: function(){
-    //       console.log('ajax delete complete');
+    var addListenerButton = function(){
+      $('input[type=submit]').click(function(e){
+        e.preventDefault();
+        console.log('inside input submit event');
+        character_id = $('form select').val();
+        createTag(coord_x, coord_y, character_id);
+      });
 
-    //     }
-    //   });
-    // });
   };
 
   var deleteTag= function(e){
     var target = $(e.target).parent();
     var tag_id = target.attr('id');
     var destination = '/tags/'+ tag_id;
+    target.remove();
+    total-=1
     $.ajax({
       type: 'DELETE',
       url: destination,
@@ -112,7 +106,6 @@ var games = (function($){
       dataType: 'json',
       success: function(){
         console.log('ajax deleted tag. YAY!');
-        target.remove();
 
       },
       error: function(){
@@ -141,10 +134,17 @@ var games = (function($){
     coord_y = e.pageY-50;
     $('#last').css({left:  coord_x, top:  coord_y});
     $('form').css({left:  coord_x, top:  coord_y});
+    
     // $('#last').removeAttr("id");
   };
 
-
+  var gameOver = function(){
+    if(total === 4){
+      timer.clearInterval()
+      var finalScore = $('#score').text()
+       $('#score').text("CONGRATULATION! You found all characters. Your score is " + finalScore)
+    }
+  };
   var createTag = function(x, y, char_id){
     var destination = '/tags';
     $.ajax({
@@ -156,8 +156,14 @@ var games = (function($){
           console.log('ajax create tag success');
 
           character_name = $("form option:selected").text();
-          $('#last').text(character_name);
+         
+          $('#last').html(character_name+'<br><a href="#" class="delete">Delete</a>')
+
           $('#last').removeAttr("id");
+          addListenerDelete();
+          total+=1
+          gameOver();
+          
         },
         error: function(){
           console.log('ajax failed to create tag');
