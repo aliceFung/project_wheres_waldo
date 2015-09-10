@@ -51,11 +51,10 @@ var games = (function($){
       targeting(e);
     });
 
-    //can delete, but cannot create tag
-    $('body').on('click', '.delete', function(e){
-                e.preventDefault();
-                deleteTag(e);
-              });
+    // $('body').on('click', '.delete', function(e){
+    //             e.preventDefault();
+    //             deleteTag(e);
+    //           });
 
     //createTag listener
     $('input[type=submit]').click(function(e){
@@ -76,7 +75,6 @@ var games = (function($){
     //   e.preventDefault();
     //   console.log('inside delete event');
     //   e.stopPropagation();
-    // var destination = '/tags/'+ tag_id;
     //   var target = $(e.target).parent();
     //   var tag_id = target.attr('id');
     //   $.ajax({
